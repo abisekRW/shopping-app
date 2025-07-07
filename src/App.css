@@ -1,3 +1,26 @@
+/* Animated gradient background for signup page */
+.signup-bg-animated {
+  background: linear-gradient(120deg, #dbeafe 0%, #a5b4fc 100%);
+}
+
+@keyframes gradient-move {
+  0% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+  50% {
+    filter: blur(8px);
+    opacity: 0.8;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+.animate-gradient-move {
+  animation: gradient-move 10s ease-in-out infinite alternate;
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;
