@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 function Profile() {
   const navigate = useNavigate();
@@ -7,16 +10,29 @@ function Profile() {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn) {
-      const userData = JSON.parse(localStorage.getItem('user'));
-      setUser(userData);
-      const purchased = JSON.parse(localStorage.getItem('purchases')) || [];
-      setPurchases(purchased);
-    }
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser);
+      if (firebaseUser) {
+        const userDocRef = doc(db, 'users', firebaseUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setPurchases(userDocSnap.data().purchases || []);
+        } else {
+          setPurchases([]);
+        }
+      } else {
+        setPurchases([]);
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
-  if (!localStorage.getItem('isLoggedIn')) {
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate('/login');
+  };
+
+  if (!user) {
     return (
       <div className="p-4 max-w-md mx-auto mt-8 bg-white rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-4 text-cyan-700">Profile</h2>
@@ -43,7 +59,9 @@ function Profile() {
     <div className="p-4 max-w-md mx-auto mt-8 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-cyan-700">Profile</h2>
       <div className="mb-6">
-        <p className="text-lg font-semibold text-cyan-800">Welcome, {user?.name || 'User'}!</p>
+        <p className="text-lg font-semibold text-cyan-800">
+          Welcome, {user?.displayName || user?.email || 'User'}!
+        </p>
       </div>
       <div className="mb-6">
         <h3 className="text-lg font-bold mb-2 text-cyan-700">Previous Purchases</h3>
@@ -52,11 +70,19 @@ function Profile() {
         ) : (
           <ul className="list-disc pl-6 text-gray-700">
             {purchases.map((item, idx) => (
-              <li key={idx}>{item.name} (x{item.quantity})</li>
+              <li key={idx}>
+                {item.name} (x{item.quantity})
+              </li>
             ))}
           </ul>
         )}
       </div>
+      <button
+        onClick={handleLogout}
+        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+      >
+        Logout
+      </button>
     </div>
   );
 }

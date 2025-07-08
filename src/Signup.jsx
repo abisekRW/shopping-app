@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from './firebase';
 
 function Signup() {
-  const [form, setForm] = useState({name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const navigate = useNavigate();
 
   const typing = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const signup = (e) => {
+  const signup = async (e) => {
     e.preventDefault();
-    localStorage.setItem('user', JSON.stringify(form));
-    navigate('/Login');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      await updateProfile(userCredential.user, { displayName: form.name });
+      alert("Signup successful!");
+      navigate('/login');
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -23,7 +31,9 @@ function Signup() {
         <input name="email" type="email" required placeholder="Email" onChange={typing} className="w-full px-3 py-2 border rounded"/>
         <input name="password" type="password" required placeholder="Password" onChange={typing} className="w-full px-3 py-2 border rounded"/>
         <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Sign Up</button>
-        <p className="text-sm text-center">Already have an account?{' '}<a href="/login" className="text-blue-600 hover:underline">Login</a></p>
+        <p className="text-sm text-center">Already have an account?{' '}
+          <a href="/login" className="text-blue-600 hover:underline">Login</a>
+        </p>
       </form>
     </div>
   );
