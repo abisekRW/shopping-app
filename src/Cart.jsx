@@ -53,7 +53,7 @@ function Cart({ cart, setCart }) {
       setTimeout(() => {
         popup.remove();
         navigate('/Products');
-      }, 1500);
+      }, 600);
     } catch (err) {
       alert('Error saving purchase: ' + err.message);
     }

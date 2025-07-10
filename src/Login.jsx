@@ -23,7 +23,7 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-green-100 px-4">
+    <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-green-100 px-4">
         <div className="w-full flex justify-start max-w-md">
         </div>
       <form onSubmit={login} className="bg-white w-full max-w-sm p-6 rounded-lg shadow-lg space-y-4">
