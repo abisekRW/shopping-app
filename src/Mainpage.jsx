@@ -16,6 +16,8 @@ function Mainpage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-cyan-100 to-blue-200 p-6">
+      <div className="w-full flex justify-start max-w-4xl">
+      </div>
       <div className="bg-white bg-opacity-90 rounded-2xl shadow-2xl p-8 max-w-2xl w-full text-center animate-fade-in">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-cyan-600 mb-4 drop-shadow-lg">Welcome to My Shop!</h1>
         <p className="text-lg text-gray-700 mb-6">Discover the best products at unbeatable prices. Enjoy a seamless shopping experience with fast delivery and secure checkout.</p>

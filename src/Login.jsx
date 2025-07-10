@@ -16,7 +16,6 @@ function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
       console.log('User logged in:', userCredential.user);
-      // No need to set localStorage, auth state is managed by Firebase
       navigate('/Products');
     } catch (error) {
       alert('Invalid credentials: ' + error.message);
@@ -24,7 +23,9 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-100 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-green-100 px-4">
+        <div className="w-full flex justify-start max-w-md">
+        </div>
       <form onSubmit={login} className="bg-white w-full max-w-sm p-6 rounded-lg shadow-lg space-y-4">
         <h2 className="text-2xl font-bold text-center">Login</h2>
         <input

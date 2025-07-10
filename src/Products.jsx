@@ -4,7 +4,6 @@ import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
-// Image URLs from Firebase Storage (replace with your actual URLs)
 const imageLinks = {
   apple: 'https://bcfbevnlfzxuthjicnwr.storage.supabase.co/v1/object/sign/shopping/fruits-vegetables/apple.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YWUzZTRmZS05OWJiLTRkZmQtODVlNC0yNjdjODRjOWIxMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaG9wcGluZy9mcnVpdHMtdmVnZXRhYmxlcy9hcHBsZS5wbmciLCJpYXQiOjE3NTE5NzEzMTYsImV4cCI6MTc4MzUwNzMxNn0.O8dHl288nvM6-uXDQ9ldelxPhX0I0c69qDDYR6dwxGU',
 
@@ -224,9 +223,20 @@ function Products({ cart, setCart }) {
   const goToCart = () => navigate("/Cart");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 p-4">
-      <h2 className="text-3xl font-bold text-center mb-8 text-cyan-700">Shop by Category</h2>
-      <div className="flex flex-wrap justify-center mb-8 gap-2">
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 p-2 sm:p-4">
+      <div className="w-full flex justify-start mb-2 sm:mb-4">
+        <button
+          onClick={() => navigate('/')}
+          className="group flex items-center gap-2 px-5 py-2 bg-white border-2 border-cyan-400 text-cyan-700 rounded-full shadow-md hover:bg-cyan-50 hover:border-cyan-600 hover:text-cyan-900 transition-all duration-200 font-bold text-lg tracking-wide focus:outline-none focus:ring-2 focus:ring-cyan-300"
+          style={{ letterSpacing: '0.04em' }}
+          aria-label="Go to main page"
+        >
+          <span className="inline-block text-2xl group-hover:-translate-x-1 transition-transform">←</span>
+          <span className="hidden sm:inline font-semibold">Back</span>
+        </button>
+      </div>
+      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-8 text-cyan-700">Shop by Category</h2>
+      <div className="flex flex-wrap justify-center mb-4 sm:mb-8 gap-2">
         <button
           className={`px-6 py-2 rounded-full font-semibold transition-colors duration-200 focus:outline-none ${page === 0 ? 'bg-cyan-500 text-white shadow' : 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200'}`}
           onClick={() => setPage(0)}
@@ -261,33 +271,33 @@ function Products({ cart, setCart }) {
       {page === 0 && (
         <>
           <h3 className="text-2xl font-semibold mb-4 text-cyan-600">Fruits &amp; Vegetables</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             {fruitsAndVegetables.map((product) => {
               const isAdded = addedItems[product.id];
               return (
-                <div key={product.id} className="border p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center">
+                <div key={product.id} className="border p-4 sm:p-6 rounded-2xl shadow-lg bg-white bg-opacity-90 flex flex-col items-center min-w-[160px] min-h-[140px] max-w-[340px] w-full sm:min-w-[220px] sm:min-h-[180px]">
                   {product.image ? (
-                    <img src={product.image} alt={product.name} className="w-16 h-16 mb-2 rounded-full object-cover border-2 border-cyan-200 shadow" />
+                    <img src={product.image} alt={product.name} className="w-24 h-24 mb-3 rounded-full object-cover border-2 border-cyan-200 shadow" />
                   ) : (
-                    <div className="w-16 h-16 mb-2 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 flex items-center justify-center text-2xl font-bold text-cyan-700">
+                    <div className="w-24 h-24 mb-3 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 flex items-center justify-center text-3xl font-bold text-cyan-700">
                       {product.name[0]}
                     </div>
                   )}
-                  <h4 className="text-lg font-bold mb-1">{product.name}</h4>
-                  <p className="mb-2">₹{product.price}</p>
-                  <div className="flex items-center space-x-2 mb-2">
+                  <h4 className="text-xl font-bold mb-2">{product.name}</h4>
+                  <p className="mb-3 text-lg">₹{product.price}</p>
+                  <div className="flex items-center space-x-3 mb-3">
                     <button
                       onClick={() => minus(product.id)}
-                      className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"> - </button>
-                    <span>{quantity[product.id] || 1}</span>
+                      className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-lg"> - </button>
+                    <span className="text-lg">{quantity[product.id] || 1}</span>
                     <button
                       onClick={() => plus(product.id)}
-                      className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"> + </button>
+                      className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-lg"> + </button>
                   </div>
                   <button
                     onClick={() => add(product)}
                     disabled={isAdded}
-                    className={`text-white px-4 py-1 w-full rounded ${isAdded ? "bg-green-600 cursor-default" : "bg-cyan-500 hover:bg-green-600"}`}>
+                    className={`text-white px-4 py-2 w-full rounded-lg text-base font-semibold ${isAdded ? "bg-green-600 cursor-default" : "bg-cyan-500 hover:bg-green-600"}`}>
                     {isAdded ? "Added to Cart" : "Add to Cart"}
                   </button>
                 </div>
@@ -299,33 +309,33 @@ function Products({ cart, setCart }) {
       {page === 1 && (
         <>
           <h3 className="text-2xl font-semibold mb-4 text-cyan-600">Snacks</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             {snacks.map((product) => {
               const isAdded = addedItems[product.id];
               return (
-                <div key={product.id} className="border p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center">
+                <div key={product.id} className="border p-4 sm:p-8 rounded-2xl shadow-lg bg-white bg-opacity-90 flex flex-col items-center min-w-[160px] min-h-[140px] max-w-[340px] max-h-[260px] w-full sm:min-w-[220px] sm:min-h-[200px] sm:max-w-[340px] sm:max-h-[260px]">
                   {product.image ? (
-                    <img src={product.image} alt={product.name} className="w-16 h-16 mb-2 rounded-full object-cover border-2 border-cyan-200 shadow" />
+                    <img src={product.image} alt={product.name} className="w-28 h-28 mb-4 rounded-full object-cover border-2 border-cyan-200 shadow-lg" />
                   ) : (
-                    <div className="w-16 h-16 mb-2 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 flex items-center justify-center text-2xl font-bold text-cyan-700">
+                    <div className="w-28 h-28 mb-4 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 flex items-center justify-center text-3xl font-bold text-cyan-700">
                       {product.name[0]}
                     </div>
                   )}
-                  <h4 className="text-lg font-bold mb-1">{product.name}</h4>
-                  <p className="mb-2">₹{product.price}</p>
-                  <div className="flex items-center space-x-2 mb-2">
+                  <h4 className="text-xl font-bold mb-2">{product.name}</h4>
+                  <p className="mb-3 text-lg">₹{product.price}</p>
+                  <div className="flex items-center space-x-3 mb-3">
                     <button
                       onClick={() => minus(product.id)}
-                      className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"> - </button>
-                    <span>{quantity[product.id] || 1}</span>
+                      className="bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded text-lg"> - </button>
+                    <span className="text-lg">{quantity[product.id] || 1}</span>
                     <button
                       onClick={() => plus(product.id)}
-                      className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"> + </button>
+                      className="bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded text-lg"> + </button>
                   </div>
                   <button
                     onClick={() => add(product)}
                     disabled={isAdded}
-                    className={`text-white px-4 py-1 w-full rounded ${isAdded ? "bg-green-600 cursor-default" : "bg-cyan-500 hover:bg-green-600"}`}>
+                    className={`text-white px-6 py-2 w-full rounded-lg text-lg font-semibold mt-auto ${isAdded ? "bg-green-600 cursor-default" : "bg-cyan-500 hover:bg-green-600"}`}>
                     {isAdded ? "Added to Cart" : "Add to Cart"}
                   </button>
                 </div>
@@ -337,11 +347,11 @@ function Products({ cart, setCart }) {
       {page === 2 && (
         <>
           <h3 className="text-2xl font-semibold mb-4 text-cyan-600">Electronics</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             {electronics.map((product) => {
               const isAdded = addedItems[product.id];
               return (
-                <div key={product.id} className="border p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center">
+                <div key={product.id} className="border p-3 sm:p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center min-w-[120px] max-w-[340px] w-full min-h-[100px] max-h-[220px] sm:min-w-[180px] sm:min-h-[160px]">
                   <img src={product.image} alt={product.name} className="w-16 h-16 mb-2 rounded-full object-cover border-2 border-cyan-200 shadow" />
                   <h4 className="text-lg font-bold mb-1">{product.name}</h4>
                   <p className="mb-2">₹{product.price}</p>
@@ -369,11 +379,11 @@ function Products({ cart, setCart }) {
       {page === 3 && (
         <>
           <h3 className="text-2xl font-semibold mb-4 text-cyan-600">Mobile Accessories</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             {mobileAccessories.map((product) => {
               const isAdded = addedItems[product.id];
               return (
-                <div key={product.id} className="border p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center">
+                <div key={product.id} className="border p-3 sm:p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center min-w-[120px] max-w-[340px] w-full sm:min-w-[180px]">
                   <img src={product.image} alt={product.name} className="w-16 h-16 mb-2 rounded-full object-cover border-2 border-cyan-200 shadow" />
                   <h4 className="text-lg font-bold mb-1">{product.name}</h4>
                   <p className="mb-2">₹{product.price}</p>
@@ -401,11 +411,11 @@ function Products({ cart, setCart }) {
       {page === 4 && (
         <>
           <h3 className="text-2xl font-semibold mb-4 text-cyan-600">Laptops</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             {laptops.map((product) => {
               const isAdded = addedItems[product.id];
               return (
-                <div key={product.id} className="border p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center">
+                <div key={product.id} className="border p-3 sm:p-4 rounded-xl shadow bg-white bg-opacity-90 flex flex-col items-center min-w-[120px] max-w-[340px] w-full sm:min-w-[180px]">
                   <img src={product.image} alt={product.name} className="w-16 h-16 mb-2 rounded-full object-cover border-2 border-cyan-200 shadow" />
                   <h4 className="text-lg font-bold mb-1">{product.name}</h4>
                   <p className="mb-2">₹{product.price}</p>
@@ -430,8 +440,8 @@ function Products({ cart, setCart }) {
           </div>
         </>
       )}
-      <div className="flex justify-center mt-8">
-        <button className="bg-green-600 text-white py-2 px-8 rounded-full text-lg font-bold shadow-lg hover:bg-green-700 transition-colors duration-200" onClick={goToCart}>Go to Cart</button>
+      <div className="flex justify-center mt-4 sm:mt-8 w-full">
+        <button className="bg-green-600 text-white py-2 px-4 sm:px-8 rounded-full text-base sm:text-lg font-bold shadow-lg hover:bg-green-700 transition-colors duration-200 w-full max-w-xs" onClick={goToCart}>Go to Cart</button>
       </div>
     </div>
   );

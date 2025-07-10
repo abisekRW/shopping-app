@@ -11,7 +11,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCsMYzFz0XsK7v3WD-HbqHdzZwmIjVNuJA",
   authDomain: "nozama-c0744.firebaseapp.com",
   projectId: "nozama-c0744",
-  storageBucket: "nozama-c0744.firebasestorage.app",
+  storageBucket: "nozama-c0744.appspot.com",
   messagingSenderId: "1010910187222",
   appId: "1:1010910187222:web:83f0e9106990031aec4377",
   measurementId: "G-DCDD2M31W3"
