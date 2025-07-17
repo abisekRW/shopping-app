@@ -1,55 +1,85 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebase';
+import { useState } from 'react';
 
-function Login() {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const navigate = useNavigate();
-
-  const typing = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+function Login({ onLogin, onSwitchToSignup }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const login = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
-      console.log('User logged in:', userCredential.user);
-      navigate('/Products');
-    } catch (error) {
-      alert('Invalid credentials: ' + error.message);
+      const res = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        onLogin(data);
+      } else {
+        const errorData = await res.json();
+        setError(errorData.detail || 'Invalid credentials');
+      }
+    } catch (err) {
+      setError(err.message || 'Network error. Please try again.');
     }
   };
 
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-green-100 px-4">
-        <div className="w-full flex justify-start max-w-md">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <form onSubmit={login}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          {error && (
+            <div className="mb-4 text-red-500 text-sm text-center">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Login
+          </button>
+        </form>
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <button
+              onClick={onSwitchToSignup}
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              Sign up here
+            </button>
+          </p>
         </div>
-      <form onSubmit={login} className="bg-white w-full max-w-sm p-6 rounded-lg shadow-lg space-y-4">
-        <h2 className="text-2xl font-bold text-center">Login</h2>
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="Email"
-          className="w-full px-3 py-2 border rounded"
-          onChange={typing}
-        />
-        <input
-          name="password"
-          type="password"
-          required
-          placeholder="Password"
-          className="w-full px-3 py-2 border rounded"
-          onChange={typing}
-        />
-        <button type="submit" className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">Login</button>
-        <p className="text-sm text-center">
-          Don’t have an account?{' '}
-          <a href="/signup" className="text-green-600 hover:underline">Signup</a>
-        </p>
-      </form>
+      </div>
     </div>
   );
 }

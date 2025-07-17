@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import appleImg from './assets/products/fruits-vegetables/apple.png';
-import chipsImg from './assets/products/snacks/chips.jpg';
-import smartwatchImg from './assets/products/electronics/smartwatch.jpg';
-import phonecaseImg from './assets/products/mobile-accessories/phonecase.jpg';
-import macImg from './assets/products/laptops/macbookpro.jpg';
-import cameraImg from './assets/products/electronics/camera.jpg';
-import popcornImg from './assets/products/snacks/popcorn.jpg';
-import surfaceImg from './assets/products/laptops/microsoftsurface.jpg';
+import appleImg from './assets/fruits-vegetables/apple.png';
+import chipsImg from './assets/snacks/chips.jpg';
+import smartwatchImg from './assets/electronics/smartwatch.jpg';
+import phonecaseImg from './assets/mobile-accessories/phonecase.jpg';
+import macImg from './assets/laptops/macbookpro.jpg';
+import cameraImg from './assets/electronics/camera.jpg';
+import popcornImg from './assets/snacks/popcorn.jpg';
+import surfaceImg from './assets/laptops/microsoftsurface.jpg';
 
 function Mainpage() {
   const navigate = useNavigate();

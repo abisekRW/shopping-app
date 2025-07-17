@@ -1,43 +1,85 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from './firebase';
 
-// Back to Home button uses material-icons (Google Fonts) for arrow icon
-
-function Signup() {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
-  const navigate = useNavigate();
-
-  const typing = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+function Signup({ onSignup, onSwitchToLogin }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const signup = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      await updateProfile(userCredential.user, { displayName: form.name });
-      navigate('/login');
-    } catch (error) {
-      alert(error.message);
+      const res = await fetch('http://localhost:8000/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        onSignup(data);
+      } else {
+        const errorData = await res.json();
+        setError(errorData.detail || 'Signup failed');
+      }
+    } catch (err) {
+      setError(err.message || 'Network error. Please try again.');
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
-        <div className="w-full flex justify-start max-w-md">
+ return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+        <form onSubmit={signup}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          {error && (
+            <div className="mb-4 text-red-500 text-sm text-center">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Sign Up
+          </button>
+        </form>
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">
+            Already have an account?{' '}
+            <button
+              onClick={onSwitchToLogin}
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              Login here
+            </button>
+          </p>
         </div>
-      <form onSubmit={signup} className="bg-white w-full max-w-sm p-6 rounded-lg shadow-lg space-y-4">
-        <h2 className="text-2xl font-bold text-center">Sign Up</h2>
-        <input name="name" type="text" required placeholder="Username" onChange={typing} className="w-full px-3 py-2 border rounded"/>
-        <input name="email" type="email" required placeholder="Email" onChange={typing} className="w-full px-3 py-2 border rounded"/>
-        <input name="password" type="password" required placeholder="Password" onChange={typing} className="w-full px-3 py-2 border rounded"/>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Sign Up</button>
-        <p className="text-sm text-center">Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:underline">Login</a>
-        </p>
-      </form>
+      </div>
     </div>
   );
 }
